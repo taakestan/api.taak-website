@@ -2,12 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+class Controller extends ApiController {
+    /**
+     * handle the http 404 status code
+     *
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function respondNotFound($message = 'Not found!'): \Illuminate\Http\JsonResponse
+    {
+        return $this->setStatusCode(404)
+            ->respondWithError($message);
+    }
 
-class Controller extends BaseController
-{
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    /**
+     * handle the http 500 status code
+     *
+     * @param string $message
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function respondInternalError($message = 'Internal Error!'): \Illuminate\Http\JsonResponse
+    {
+        return $this->setStatusCode(500)
+            ->respondWithError($message);
+    }
 }
