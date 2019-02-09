@@ -15,6 +15,11 @@ class CreateWebinarsTable extends Migration
     {
         Schema::create('webinars', function (Blueprint $table) {
             $table->increments('id');
+
+            $table->string('title');
+            $table->string('en_title');
+            $table->string('slug')->unique()->index();
+
             $table->timestamps();
         });
     }
