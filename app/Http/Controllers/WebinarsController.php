@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 
+use App\Tools\Base64Generator;
+
 class WebinarsController extends Controller {
+    use Base64Generator;
     /**
      * Display a listing of the resource.
      *
