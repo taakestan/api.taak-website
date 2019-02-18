@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\WebinarResource;
 use App\Models\User;
-use App\Models\Webinar;
 use App\Tools\Base64Generator;
 
 class WebinarsController extends Controller {
