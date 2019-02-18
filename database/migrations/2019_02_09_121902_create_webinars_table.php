@@ -17,7 +17,7 @@ class CreateWebinarsTable extends Migration
             $table->increments('id');
 
             $table->string('title');
-            $table->string('en_title');
+            $table->string('label');
             $table->string('slug')->unique()->index();
 
             $table->timestamps();

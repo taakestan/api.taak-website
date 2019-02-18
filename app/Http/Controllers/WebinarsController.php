@@ -31,7 +31,7 @@ class WebinarsController extends Controller {
     {
         $validated = $this->validate($request, [
             'title' => 'required|string',
-            'en_title' => 'required|string'
+            'label' => 'required|string'
         ]);
 
         $webinar = Webinar::create($validated);

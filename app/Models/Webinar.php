@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer id
  * @property string title
- * @property string en_title
+ * @property string label
  * @property string slug
  * @method static|Webinar create($data)
  */
@@ -34,11 +34,11 @@ class Webinar extends Model
         parent::boot();
 
         static::creating(function ($product) {
-            $product->slug = $product->en_title;
+            $product->slug = $product->label;
         });
 
         static::updating(function ($product) {
-            $product->slug = $product->en_title;
+            $product->slug = $product->label;
         });
     }
 
@@ -47,13 +47,13 @@ class Webinar extends Model
     #-------------------------------------##   <editor-fold desc="The Mutator">   ##----------------------------------------------------#
 
     /**
-     * create slug from the en_title of webinar
+     * create slug from the label of webinar
      *
-     * @param $en_title
+     * @param $label
      */
-    public function setSlugAttribute($en_title)
+    public function setSlugAttribute($label)
     {
-        $this->attributes['slug'] = \Illuminate\Support\Str::slug($en_title);
+        $this->attributes['slug'] = \Illuminate\Support\Str::slug($label);
     }
     # </editor-fold>
 }

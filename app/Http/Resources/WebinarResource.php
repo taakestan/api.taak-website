@@ -7,7 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /**
  * @property integer id
  * @property string title
- * @property string en_title
+ * @property string label
  * @property string slug
  */
 class WebinarResource extends JsonResource
@@ -23,7 +23,7 @@ class WebinarResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'en_title' => $this->en_title,
+            'label' => $this->label,
             'slug' => $this->slug
         ];
     }

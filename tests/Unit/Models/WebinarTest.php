@@ -42,14 +42,14 @@ class WebinarTest extends TestCase {
     }
 
     /** @test */
-    public function it_update_slug_to_new_en_title_when_updating_en_title()
+    public function it_update_slug_to_new_label_when_updating_label()
     {
         $this->webinar->update([
-            'en_title' => $en_title = 'the new english title'
+            'label' => $label = 'the new english title'
         ]);
 
         $this->assertEquals(
-            $this->webinar->en_title, $en_title
+            $this->webinar->label, $label
         );
     }
 
@@ -58,15 +58,15 @@ class WebinarTest extends TestCase {
     #-------------------------------------##   <editor-fold desc="The Mutator">   ##----------------------------------------------------#
 
     /** @test */
-    public function it_should_create_slug_from_the_en_title_of_webinar()
+    public function it_should_create_slug_from_the_label_of_webinar()
     {
         $webinar = create(Webinar::class, [
-            'en_title' => $en_title = $this->faker->sentence
+            'label' => $label = $this->faker->sentence
 
         ]);
 
         $this->assertEquals(
-            $webinar->slug, str_slug($en_title)
+            $webinar->slug, str_slug($label)
         );
     }
 
