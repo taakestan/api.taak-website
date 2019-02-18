@@ -127,7 +127,7 @@ class CreateWebinarTest extends TestCase {
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
-                    'id', 'title', 'label', 'slug', 'description', 'content', 'provider'
+                    'id', 'title', 'label', 'slug', 'description', 'content'
                 ], 'message'
             ]);
 

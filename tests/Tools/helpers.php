@@ -7,7 +7,7 @@ if (!function_exists('create')) {
      * @param string $class
      * @param array $attribute
      * @param null $times
-     * @return \Illuminate\Database\Eloquent\Model
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Support\Collection
      */
     function create(string $class, array $attribute = [], $times = null)
     {

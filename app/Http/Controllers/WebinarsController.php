@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Resources\WebinarResource;
+use App\Models\User;
 use App\Models\Webinar;
 use App\Tools\Base64Generator;
 
 class WebinarsController extends Controller {
 
     use Base64Generator;
+
     /**
      * Display a listing of the resource.
      *
@@ -37,7 +39,9 @@ class WebinarsController extends Controller {
             'provider_id' => 'required|exists:users,id'
         ]);
 
-        $webinar = Webinar::create($validated);
+        $webinar = User::findOrFail($validated['provider_id'])
+            ->webinars()
+            ->create($validated);
 
         return $this->respondCreated(
             'وبینار جدید ایجاد شد', new WebinarResource($webinar)
