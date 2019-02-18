@@ -75,6 +75,20 @@ class CreateWebinarTest extends TestCase {
             ->assertJsonValidationErrors('label');
     }
 
+    /** @test */
+    public function it_required_description()
+    {
+        $this->setData(['description' => null])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('description');
+
+        $this->setData(['description' => 12345])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('description');
+    }
+
     # </editor-fold>
 
     /** @test */
@@ -85,7 +99,7 @@ class CreateWebinarTest extends TestCase {
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
-                    'id', 'title', 'label', 'slug'
+                    'id', 'title', 'label', 'slug', 'description', 'content'
                 ], 'message'
             ]);
 

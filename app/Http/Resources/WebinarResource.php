@@ -9,6 +9,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string title
  * @property string label
  * @property string slug
+ * @property string description
+ * @property string content
  */
 class WebinarResource extends JsonResource
 {
@@ -24,7 +26,9 @@ class WebinarResource extends JsonResource
             'id' => $this->id,
             'title' => $this->title,
             'label' => $this->label,
-            'slug' => $this->slug
+            'slug' => $this->slug,
+            'description' => $this->description,
+            'content' => $this->content
         ];
     }
 }

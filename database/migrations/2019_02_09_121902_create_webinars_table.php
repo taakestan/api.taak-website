@@ -20,6 +20,9 @@ class CreateWebinarsTable extends Migration
             $table->string('label');
             $table->string('slug')->unique()->index();
 
+            $table->text('description');
+            $table->text('content');
+
             $table->timestamps();
         });
     }
