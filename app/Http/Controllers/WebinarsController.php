@@ -32,8 +32,9 @@ class WebinarsController extends Controller {
         $validated = $this->validate($request, [
             'title' => 'required|string',
             'label' => 'required|string',
-            'description' => 'required|string',
-            'content' => 'required|string'
+            'description' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
+            'content' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
+            'provider_id' => 'required|exists:users,id'
         ]);
 
         $webinar = Webinar::create($validated);

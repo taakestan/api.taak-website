@@ -20,10 +20,16 @@ class CreateWebinarsTable extends Migration
             $table->string('label');
             $table->string('slug')->unique()->index();
 
+            $table->unsignedInteger('provider_id');
+
             $table->text('description');
             $table->text('content');
 
             $table->timestamps();
+
+            $table->foreign('provider_id')
+                ->references('id')->on('users')
+                ->onDelete('no action')->onUpdate('no action');
         });
     }
 

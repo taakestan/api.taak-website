@@ -8,5 +8,8 @@ $factory->define(\App\Models\Webinar::class, function (Faker $faker) {
         'label' => $faker->unique()->safeEmail,
         'description' => $faker->sentence,
         'content' => $faker->paragraph,
+        'provider_id' => function(){
+            return factory(\App\Models\User::class)->create()->id;
+        }
     ];
 });

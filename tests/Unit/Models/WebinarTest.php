@@ -31,6 +31,41 @@ class WebinarTest extends TestCase {
 
     # </editor-fold>
 
+    #-------------------------------------##   <editor-fold desc="The Guarded">   ##----------------------------------------------------#
+
+    /**
+     * checking guard data
+     *
+     * @param array $guardData
+     */
+    protected function assertGuard(array $guardData)
+    {
+        $this->webinar->update(
+            raw(Webinar::class, $guardData)
+        );
+        $this->assertDatabaseMissing('webinars', $guardData);
+    }
+
+    /** @test */
+    public function it_should_guarded_the_id_field()
+    {
+        $this->assertGuard(['id' => 14048343]);
+    }
+
+    /** @test */
+    public function it_should_guarded_the_slug_field()
+    {
+        $this->assertGuard(['slug' => 'The fake slug value']);
+    }
+
+    /** @test */
+    public function it_should_guarded_the_provider_id_field()
+    {
+        $this->assertGuard(['provider_id' => 999]);
+    }
+
+    # </editor-fold>
+
     #-------------------------------------##   <editor-fold desc="The Booting">   ##----------------------------------------------------#
 
     /** @test */
@@ -55,6 +90,18 @@ class WebinarTest extends TestCase {
 
     # </editor-fold>
 
+    #-------------------------------------##   <editor-fold desc="The RelationShips">   ##----------------------------------------------------#
+
+    /** @test */
+    public function it_belongs_to_a_provider()
+    {
+        $provider = create('App\Models\User');
+
+        $webinar = create(Webinar::class, ['provider_id' => $provider->id]);
+
+        $this->assertEquals($provider->toArray(), $webinar->provider->toArray());
+    }
+
     #-------------------------------------##   <editor-fold desc="The Mutator">   ##----------------------------------------------------#
 
     /** @test */
@@ -62,7 +109,6 @@ class WebinarTest extends TestCase {
     {
         $webinar = create(Webinar::class, [
             'label' => $label = $this->faker->sentence
-
         ]);
 
         $this->assertEquals(

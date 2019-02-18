@@ -13,13 +13,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Webinar extends Model
 {
+
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var array
+     */
+    protected $with = [
+        'provider'
+    ];
+
     /**
      * The attributes that aren't mass assignable.
      *
      * @var array
      */
     protected $guarded = [
-        'id', 'slug'
+        'id', 'slug', 'provider_id'
     ];
 
     #-------------------------------------##   <editor-fold desc="Booting">   ##----------------------------------------------------#
@@ -40,6 +50,20 @@ class Webinar extends Model
         static::updating(function ($product) {
             $product->slug = $product->label;
         });
+    }
+
+    # </editor-fold>
+
+    #-------------------------------------##   <editor-fold desc="The RelationShips">   ##----------------------------------------------------#
+
+    /**
+     * webinar provider
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function provider()
+    {
+        return $this->belongsTo(User::class, 'provider_id');
     }
 
     # </editor-fold>

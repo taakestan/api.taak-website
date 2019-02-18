@@ -28,7 +28,8 @@ class WebinarResource extends JsonResource
             'label' => $this->label,
             'slug' => $this->slug,
             'description' => $this->description,
-            'content' => $this->content
+            'content' => $this->content,
+            'provider' => new ProviderResource($this->whenLoaded('provider'))
         ];
     }
 }
