@@ -54,6 +54,11 @@ class CreateWebinarTest extends TestCase {
             ->assertStatus(422)
             ->assertJsonValidationErrors('title');
 
+        $this->setData(['title' => 1234])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('title');
+
     }
 
     /** @test */
@@ -64,6 +69,10 @@ class CreateWebinarTest extends TestCase {
             ->assertStatus(422)
             ->assertJsonValidationErrors('en_title');
 
+        $this->setData(['en_title' => 12345])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('en_title');
     }
 
     # </editor-fold>
@@ -73,10 +82,12 @@ class CreateWebinarTest extends TestCase {
     {
         $this->setData()
             ->store()
-            ->assertStatus(200)
-            ->assertJsonStructure(
-                wrap_with_data(['webinar', 'message'])
-            );
+            ->assertStatus(201)
+            ->assertJsonStructure([
+                'data' => [
+                    'id', 'title', 'en_title', 'slug'
+                ], 'message'
+            ]);
 
         $this->assertDatabaseHas('webinars', $this->data);
     }

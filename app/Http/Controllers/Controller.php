@@ -12,7 +12,7 @@ class Controller extends ApiController {
     public function respondNotFound($message = 'Not found!'): \Illuminate\Http\JsonResponse
     {
         return $this->setStatusCode(404)
-            ->respondWithError($message);
+            ->respondWithErrors($message);
     }
 
     /**
@@ -24,6 +24,6 @@ class Controller extends ApiController {
     public function respondInternalError($message = 'Internal Error!'): \Illuminate\Http\JsonResponse
     {
         return $this->setStatusCode(500)
-            ->respondWithError($message);
+            ->respondWithErrors($message);
     }
 }

@@ -35,7 +35,7 @@ abstract class ApiController extends BaseController {
      * @param int $statusCode
      * @return ApiController
      */
-    protected function setStatusCode(int $statusCode)
+    protected function setStatusCode(int $statusCode): ApiController
     {
         $this->statusCode = $statusCode;
 
@@ -45,30 +45,54 @@ abstract class ApiController extends BaseController {
     /**
      * response the http request
      *
-     * @param mixed $data
+     * @param $resource
+     * @param null $message
      * @param array $header
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respond($data, $header = [])
+    protected function respond($message = null, $resource = null, $header = [])
     {
-        return response()->json(
-            wrap_with_data($data), $this->getStatusCode(), $header
-        );
+        $data = [];
+        if ($resource) $data = array_merge(['data' => $resource]);
+        if ($message) $data = array_merge($data, ['message' => $message]);
+
+        return response()->json($data, $this->getStatusCode(), $header);
+    }
+
+    /**
+     * response the http created 201
+     *
+     * @param $resource
+     * @param null $message
+     * @param array $header
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondCreated($message = null, $resource = null, $header = [])
+    {
+        return $this->setStatusCode(201)
+            ->respond($message, $resource, $header);
+    }
+
+    /**
+     * response the http created 201
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    protected function respondDeleted()
+    {
+        return $this->setStatusCode(204)
+            ->respond();
     }
 
     /**
      * fill the error message and status code into array
      *
-     * @param $message
+     * @param array $errors
+     * @param string $message
      * @return \Illuminate\Http\JsonResponse
      */
-    protected function respondWithError($message): \Illuminate\Http\JsonResponse
+    protected function respondWithErrors($message = 'مشکلی بوجود آمده است!', $errors = []): \Illuminate\Http\JsonResponse
     {
-        $error = [
-            'message' => $message,
-            'status_code' => $this->getStatusCode(),
-        ];
-
-        return $this->respond(compact('error'));
+        return $this->respond($message, compact('errors'));
     }
 }

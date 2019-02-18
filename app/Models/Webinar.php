@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string title
  * @property string en_title
  * @property string slug
+ * @method static|Webinar create($data)
  */
 class Webinar extends Model
 {
@@ -52,7 +53,7 @@ class Webinar extends Model
      */
     public function setSlugAttribute($en_title)
     {
-        $this->attributes['slug'] = str_slug($en_title);
+        $this->attributes['slug'] = \Illuminate\Support\Str::slug($en_title);
     }
     # </editor-fold>
 }

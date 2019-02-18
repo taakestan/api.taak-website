@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Resources\WebinarResource;
+use App\Models\Webinar;
 use App\Tools\Base64Generator;
 
 class WebinarsController extends Controller {
+
     use Base64Generator;
     /**
      * Display a listing of the resource.
@@ -21,11 +24,21 @@ class WebinarsController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(\Illuminate\Http\Request $request)
     {
-        //
+        $validated = $this->validate($request, [
+            'title' => 'required|string',
+            'en_title' => 'required|string'
+        ]);
+
+        $webinar = Webinar::create($validated);
+
+        return $this->respondCreated(
+            'وبینار جدید ایجاد شد', new WebinarResource($webinar)
+        );
     }
 
     /**
