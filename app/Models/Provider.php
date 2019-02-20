@@ -19,6 +19,21 @@ class Provider extends Model
         'id'
     ];
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'profiles' => 'array'
+    ];
 
     #-------------------------------------##   <editor-fold desc="The RelationShips">   ##----------------------------------------------------#
 
