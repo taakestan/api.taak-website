@@ -2,20 +2,21 @@
 
 namespace Tests\Unit\Models;
 
-use App\Models\User;
+use App\Models\Provider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 
-class UserTest extends TestCase {
+class ProviderTest extends TestCase {
+
     use RefreshDatabase, WithFaker;
 
     #-------------------------------------##   <editor-fold desc="The setUp">   ##----------------------------------------------------#
 
     /**
-     * @var User $user
+     * @var Provider $provider
      */
-    protected $user;
+    protected $provider;
 
     /**
      * Setup the test environment.
@@ -25,7 +26,7 @@ class UserTest extends TestCase {
     protected function setUp()
     {
         parent::setUp();
-        $this->user = create(User::class);
+        $this->provider = create(Provider::class);
     }
 
     # </editor-fold>
@@ -39,10 +40,10 @@ class UserTest extends TestCase {
      */
     protected function assertGuard(array $guardData)
     {
-        $this->user->update(
-            raw(User::class, $guardData)
+        $this->provider->update(
+            raw(Provider::class, $guardData)
         );
-        $this->assertDatabaseMissing('users', $guardData);
+        $this->assertDatabaseMissing('providers', $guardData);
     }
 
     /** @test */
@@ -53,16 +54,15 @@ class UserTest extends TestCase {
 
     # </editor-fold>
 
-
     #-------------------------------------##   <editor-fold desc="The RelationShips">   ##----------------------------------------------------#
 
     /** @test */
     public function it_has_many_webinars()
     {
-        $webinars = create('App\Models\Webinar', ['provider_id' => $this->user->id], 3);
+        $webinars = create('App\Models\Webinar', ['provider_id' => $this->provider->id], 3);
 
         $webinars->each(function ($webinar) {
-            $this->assertTrue($this->user->webinars->contains($webinar));
+            $this->assertTrue($this->provider->webinars->contains($webinar));
         });
     }
 
