@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\WebinarResource;
 use App\Models\Provider;
 use App\Models\User;
+use App\Models\Webinar;
 use App\Tools\Base64Generator;
 
 class WebinarsController extends Controller {
@@ -63,12 +64,25 @@ class WebinarsController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param Webinar $webinar
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(\Illuminate\Http\Request $request, $id)
+    public function update(\Illuminate\Http\Request $request, Webinar $webinar)
     {
-        //
+        $validated = $this->validate($request, [
+            'title' => 'required|string',
+            'label' => 'required|string',
+            'description' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
+            'content' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
+            'provider_id' => 'required|exists:providers,id'
+        ]);
+
+        $webinar->forceFill($validated)->save();
+
+        return $this->respondCreated(
+            'وبینار جدید ایجاد شد', new WebinarResource($webinar)
+        );
     }
 
     /**
