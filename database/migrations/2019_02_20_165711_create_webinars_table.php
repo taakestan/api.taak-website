@@ -28,7 +28,7 @@ class CreateWebinarsTable extends Migration
             $table->timestamps();
 
             $table->foreign('provider_id')
-                ->references('id')->on('users')
+                ->references('id')->on('providers')
                 ->onDelete('no action')->onUpdate('no action');
         });
     }

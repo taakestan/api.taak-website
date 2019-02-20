@@ -120,7 +120,7 @@ class CreateWebinarTest extends TestCase {
     # </editor-fold>
 
     /** @test */
-    public function it_store_new_product_into_database()
+    public function it_store_new_webinar_into_database()
     {
         $this->setData()
             ->store()

@@ -95,7 +95,7 @@ class WebinarTest extends TestCase {
     /** @test */
     public function it_belongs_to_a_provider()
     {
-        $provider = create('App\Models\User');
+        $provider = create('App\Models\Provider');
 
         $webinar = create(Webinar::class, ['provider_id' => $provider->id]);
 

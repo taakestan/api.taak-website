@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Resources\WebinarResource;
+use App\Models\Provider;
 use App\Models\User;
 use App\Tools\Base64Generator;
 
@@ -35,10 +36,10 @@ class WebinarsController extends Controller {
             'label' => 'required|string',
             'description' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
             'content' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
-            'provider_id' => 'required|exists:users,id'
+            'provider_id' => 'required|exists:providers,id'
         ]);
 
-        $webinar = User::findOrFail($validated['provider_id'])
+        $webinar = Provider::findOrFail($validated['provider_id'])
             ->webinars()
             ->create($validated);
 

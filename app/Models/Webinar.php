@@ -63,7 +63,7 @@ class Webinar extends Model
      */
     public function provider()
     {
-        return $this->belongsTo(User::class, 'provider_id');
+        return $this->belongsTo(Provider::class);
     }
 
     # </editor-fold>

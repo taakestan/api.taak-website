@@ -9,7 +9,7 @@ $factory->define(\App\Models\Webinar::class, function (Faker $faker) {
         'description' => $faker->sentence,
         'content' => $faker->paragraph,
         'provider_id' => function(){
-            return factory(\App\Models\User::class)->create()->id;
+            return factory(\App\Models\Provider::class)->create()->id;
         }
     ];
 });
