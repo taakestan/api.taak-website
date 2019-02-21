@@ -20,7 +20,7 @@ class WebinarsController extends Controller {
      */
     public function index()
     {
-        //
+        return [];
     }
 
     /**
