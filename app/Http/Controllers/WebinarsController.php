@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\WebinarResource;
 use App\Models\Provider;
-use App\Models\User;
 use App\Models\Webinar;
 use App\Tools\Base64Generator;
 
@@ -88,11 +87,14 @@ class WebinarsController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param Webinar $webinar
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(Webinar $webinar)
     {
-        //
+        $webinar->delete();
+
+        return $this->respondDeleted();
     }
 }
