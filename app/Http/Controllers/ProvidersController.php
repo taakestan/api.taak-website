@@ -47,7 +47,9 @@ class ProvidersController extends Controller {
 
         $provider = Provider::create($validated);
 
-        return $this->respondCreated($provider);
+        return $this->respondCreated(
+            'یک ارایه دهنده جدید ایجاد شد', new ProviderResource($provider)
+        );
     }
 
     /**

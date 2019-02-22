@@ -107,11 +107,11 @@ class CreateProviderTest extends TestCase {
     {
         $this->setData(['profiles' => null])
             ->store()
-            ->assertStatus(200);
+            ->assertStatus(201);
 
         $this->setData(['profiles' => []])
             ->store()
-            ->assertStatus(200);
+            ->assertStatus(201);
 
         $this->setData(['profiles' => 12345])
             ->store()
@@ -129,7 +129,7 @@ class CreateProviderTest extends TestCase {
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
-                    'id', 'first_name', 'last_name', 'username', 'biography', 'profiles' => []
+                    'id', 'first_name', 'last_name', 'username', 'biography' , 'profiles' => []
                 ], 'message'
             ]);
 
