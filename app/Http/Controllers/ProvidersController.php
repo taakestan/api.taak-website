@@ -92,10 +92,25 @@ class ProvidersController extends Controller {
      * Remove the specified resource from storage.
      *
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
+        try {
+            $provider = Provider::findOrFail($id);
 
+            if ($provider->hasWebinar()) {
+                \Illuminate\Support\Facades\Log::info('An Admin want to delete a provider! but some webinar assign that provider :)');
+                return $this->respondWithErrors('امکان حذف به دلیل اختصاص یافتن وبینار به این ارایه دهنده وجود ندارد!');
+            }
+
+            $provider->delete();
+            return $this->respondDeleted();
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Error in Delete provider:" . $e->getMessage());
+
+            return $this->respondWithErrors('خطایی رخ داده است٬ گزارش خطا ثبت شد');
+        }
     }
 }

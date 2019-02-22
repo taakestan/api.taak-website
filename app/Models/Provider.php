@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property integer id
- * @method static|Provider findOrFail($provider_id)
- * @method static|Provider create(array $data)
+ * @method static |Provider findOrFail($provider_id)
+ * @method static |Provider create(array $data)
  * @property \Illuminate\Support\Collection $webinars
  */
-class Provider extends Model
-{
+class Provider extends Model {
     /**
      * The attributes that aren't mass assignable.
      *
@@ -47,6 +46,20 @@ class Provider extends Model
     public function webinars()
     {
         return $this->hasMany(Webinar::class);
+    }
+
+    # </editor-fold>
+
+    #-------------------------------------##   <editor-fold desc="The Method">   ##----------------------------------------------------#
+
+    /**
+     * check provider has webinar or not
+     *
+     * @return bool
+     */
+    public function hasWebinar()
+    {
+        return !!$this->webinars()->exists();
     }
 
     # </editor-fold>
