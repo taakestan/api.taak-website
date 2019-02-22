@@ -94,38 +94,69 @@ class WebinarsController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param Webinar $webinar
+     * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(\Illuminate\Http\Request $request, Webinar $webinar)
+    public function update(\Illuminate\Http\Request $request, $id)
     {
         $validated = $this->validate($request, [
             'title' => 'required|string',
             'label' => 'required|string',
             'description' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
             'content' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
-            'provider_id' => 'required|exists:providers,id'
+            'provider_id' => 'required|exists:providers,id',
+            'links' => 'nullable|array',
+            'image' => 'required',
+            'banner' => 'required',
         ]);
 
-        $webinar->forceFill($validated)->save();
+        try {
+            $image = $this->createFileFromBase64($validated['image']);
+            $banner = $this->createFileFromBase64($validated['banner']);
 
-        return $this->respondCreated(
-            'وبینار جدید ایجاد شد', new WebinarResource($webinar)
-        );
+            \Illuminate\Support\Facades\Validator::make(compact('image' , 'banner'), [
+                'image Or banner' => 'required|file|mimes:jpeg,jpg,png'
+            ])->validate();
+
+            $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
+                ->putFile('webinars', $image);
+            $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
+                ->putFile('webinars', $banner);
+
+            Webinar::findOrFail($id)->forceFill($validated)->save();
+
+        } catch (\App\Exceptions\InvalidBase64Data $e) {
+            Webinar::findOrFail($id)->forceFill(array_except($validated , ['image' , 'banner']))->save();
+        }
+
+        return $this->respond('بروزرسانی انجام شد');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param Webinar $webinar
+     * @param $id
      * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
      */
-    public function destroy(Webinar $webinar)
+    public function destroy($id)
     {
-        $webinar->delete();
+        try {
+            $webinar = Webinar::findOrFail($id);
+            \Illuminate\Support\Facades\Storage::disk('media')->delete(
+                joinPath('webinars', $webinar->image)
+            );
+            \Illuminate\Support\Facades\Storage::disk('media')->delete(
+                joinPath('webinars', $webinar->banner)
+            );
 
-        return $this->respondDeleted();
+            $webinar->delete();
+            return $this->respondDeleted();
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error("Error in Delete Webinar:" . $e->getMessage());
+
+            return $this->respondWithErrors('خطایی رخ داده است٬ گزارش خطا ثبت شد');
+        }
     }
 }
