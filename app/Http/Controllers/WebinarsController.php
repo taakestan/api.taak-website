@@ -54,11 +54,13 @@ class WebinarsController extends Controller {
      * Display the specified resource.
      *
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return WebinarResource
      */
     public function show($id)
     {
-        //
+        return new WebinarResource(
+            Webinar::findOrFail($id)
+        );
     }
 
     /**

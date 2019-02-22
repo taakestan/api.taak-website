@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string label
  * @property string slug
  * @method static|Webinar create($data)
+ * @method static|Webinar findOrFail($id)
  */
 class Webinar extends Model
 {
