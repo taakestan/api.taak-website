@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ProviderResource;
+use App\Models\Provider;
 use Illuminate\Http\Request;
 
 class ProvidersController extends Controller {
@@ -17,11 +19,13 @@ class ProvidersController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index()
     {
-        //
+        return ProviderResource::collection(
+            Provider::all()
+        );
     }
 
     /**
@@ -29,10 +33,19 @@ class ProvidersController extends Controller {
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request,[
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'username' => 'required|string',
+            'biography' => 'required|string',
+            'profiles' => 'nullable|array'
+        ]);
+
+        $provider
     }
 
     /**
