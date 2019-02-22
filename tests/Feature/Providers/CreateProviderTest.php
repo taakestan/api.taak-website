@@ -4,6 +4,7 @@ namespace Tests\Feature\Providers;
 
 use App\Models\Provider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CreateProviderTest extends TestCase {
@@ -107,11 +108,11 @@ class CreateProviderTest extends TestCase {
     {
         $this->setData(['profiles' => null])
             ->store()
-            ->assertStatus(201);
+            ->assertJsonMissingValidationErrors('profiles');
 
         $this->setData(['profiles' => []])
             ->store()
-            ->assertStatus(201);
+            ->assertJsonMissingValidationErrors('profiles');
 
         $this->setData(['profiles' => 12345])
             ->store()
@@ -119,20 +120,34 @@ class CreateProviderTest extends TestCase {
             ->assertJsonValidationErrors('profiles');
     }
 
+    /** @test */
+    public function it_required_image()
+    {
+        $this->setData(['image' => null])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('image');
+    }
+
     # </editor-fold>
 
     /** @test */
     public function an_authenticated_user_can_store_new_provider()
     {
-        $this->setData()
-            ->store()
+        Storage::fake('media');
+        $this->setData([
+            'image' => jpeg_fake_base_64()
+        ])->store()
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
-                    'id', 'first_name', 'last_name', 'username', 'biography' , 'profiles' => []
+                    'id', 'first_name', 'last_name', 'username', 'biography', 'image', 'profiles' => []
                 ], 'message'
             ]);
 
-        $this->assertDatabaseHas('providers', $this->data);
+        $this->assertDatabaseHas('providers', array_except($this->data, 'image'));
+        Storage::disk('media')->assertExists(
+            joinPath('providers', str_slug($this->data['username']) . '.jpeg')
+        );
     }
 }

@@ -18,3 +18,15 @@ if (!function_exists('wrap_with_data')) {
         return is_array($data) ? [$wrapWord => $data] : [$wrapWord => [$data]];
     }
 }
+if (!function_exists('joinPath')) {
+    /**
+     * Join the given path with DIRECTORY_SEPARATOR
+     *
+     * @param array $paths
+     * @return string
+     */
+    function joinPath(...$paths)
+    {
+        return implode(DIRECTORY_SEPARATOR, $paths);
+    }
+}

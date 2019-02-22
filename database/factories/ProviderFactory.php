@@ -20,5 +20,6 @@ $factory->define(App\Models\Provider::class, function (Faker $faker) {
         'last_name' => $faker->lastName,
         'username' => $faker->unique()->userName,
         'biography' => $faker->paragraph,
+        'image' => $faker->sentence
     ];
 });

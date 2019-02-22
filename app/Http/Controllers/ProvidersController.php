@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ProviderResource;
 use App\Models\Provider;
+use App\Tools\Base64Generator;
 use Illuminate\Http\Request;
 
 class ProvidersController extends Controller {
 
+    use Base64Generator;
     /**
      * ProvidersController constructor.
      */
@@ -42,8 +44,24 @@ class ProvidersController extends Controller {
             'last_name' => 'required|string',
             'username' => 'required|string',
             'biography' => 'required|string',
-            'profiles' => 'nullable|array'
+            'profiles' => 'nullable|array',
+            'image' => 'required'
         ]);
+
+        try {
+            $image = $this->createFileFromBase64($validated['image']);
+        } catch (\App\Exceptions\InvalidBase64Data $e) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                "image" => 'base64 invalid data'
+            ]);
+        }
+
+        \Illuminate\Support\Facades\Validator::make(compact('image'), [
+            'image' => 'required|file|mimes:jpeg,jpg,png'
+        ])->validate();
+
+        $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
+            ->putFileAs('providers' , $image, str_slug($validated['username']). '.jpeg');
 
         $provider = Provider::create($validated);
 
@@ -80,7 +98,8 @@ class ProvidersController extends Controller {
             'last_name' => 'required|string',
             'username' => 'required|string',
             'biography' => 'required|string',
-            'profiles' => 'nullable|array'
+            'profiles' => 'nullable|array',
+            'image' => 'required'
         ]);
 
         Provider::findOrFail($id)->update($validated);

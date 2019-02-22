@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property integer id
@@ -11,6 +12,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string username
  * @property string biography
  * @property array profiles
+ * @property string image
  */
 class ProviderResource extends JsonResource
 {
@@ -28,7 +30,8 @@ class ProviderResource extends JsonResource
             'last_name' => $this->last_name,
             'username' => $this->username,
             'biography' => $this->biography,
-            'profiles' => $this->profiles
+            'profiles' => $this->profiles,
+            'image' => Storage::disk('media')->url($this->image)
         ];
     }
 }

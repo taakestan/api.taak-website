@@ -17,6 +17,7 @@ class CreateProvidersTable extends Migration {
             $table->string('first_name');
             $table->string('last_name');
             $table->string('username')->unique();
+            $table->string('image');
             $table->text('biography')->nullable();
             $table->json('profiles')->nullable();
         });
