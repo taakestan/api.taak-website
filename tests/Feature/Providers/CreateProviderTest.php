@@ -3,11 +3,10 @@
 namespace Tests\Feature\Providers;
 
 use App\Models\Provider;
-use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-class CreateProviderTest extends TestCase
-{
+class CreateProviderTest extends TestCase {
     use RefreshDatabase;
 
     #-------------------------------------##   <editor-fold desc="setUp">   ##----------------------------------------------------#
@@ -75,75 +74,65 @@ class CreateProviderTest extends TestCase
     }
 
     /** @test */
-    public function it_required_the_label()
+    public function it_required_the_last_name()
     {
-        $this->setData(['label' => null])
+        $this->setData(['last_name' => null])
             ->store()
             ->assertStatus(422)
-            ->assertJsonValidationErrors('label');
+            ->assertJsonValidationErrors('last_name');
 
-        $this->setData(['label' => 12345])
+        $this->setData(['last_name' => 1234])
             ->store()
             ->assertStatus(422)
-            ->assertJsonValidationErrors('label');
+            ->assertJsonValidationErrors('last_name');
+
     }
 
     /** @test */
-    public function it_required_description()
+    public function it_required_username()
     {
-        $this->setData(['description' => null])
+        $this->setData(['username' => null])
             ->store()
             ->assertStatus(422)
-            ->assertJsonValidationErrors('description');
+            ->assertJsonValidationErrors('username');
 
-        $this->setData(['description' => 12345])
+        $this->setData(['username' => 12345])
             ->store()
             ->assertStatus(422)
-            ->assertJsonValidationErrors('description');
+            ->assertJsonValidationErrors('username');
     }
 
     /** @test */
-    public function it_required_content()
+    public function it_can_take_a_profiles_array()
     {
-        $this->setData(['content' => null])
+        $this->setData(['profiles' => null])
             ->store()
-            ->assertStatus(422)
-            ->assertJsonValidationErrors('content');
+            ->assertStatus(200);
 
-        $this->setData(['content' => 12345])
+        $this->setData(['profiles' => []])
             ->store()
-            ->assertStatus(422)
-            ->assertJsonValidationErrors('content');
-    }
+            ->assertStatus(200);
 
-    /** @test */
-    public function it_required_provider_id()
-    {
-        $this->setData(['provider_id' => null])
+        $this->setData(['profiles' => 12345])
             ->store()
             ->assertStatus(422)
-            ->assertJsonValidationErrors('provider_id');
-
-        $this->setData(['provider_id' => 12345])
-            ->store()
-            ->assertStatus(422)
-            ->assertJsonValidationErrors('provider_id');
+            ->assertJsonValidationErrors('profiles');
     }
 
     # </editor-fold>
 
     /** @test */
-    public function it_store_new_webinar_into_database()
+    public function an_authenticated_user_can_store_new_provider()
     {
         $this->setData()
             ->store()
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
-                    'id', 'title', 'label', 'slug', 'description', 'content'
+                    'id', 'first_name', 'last_name', 'username', 'biography', 'profiles' => []
                 ], 'message'
             ]);
 
-        $this->assertDatabaseHas('webinars', $this->data);
+        $this->assertDatabaseHas('providers', $this->data);
     }
 }
