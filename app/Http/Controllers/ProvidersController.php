@@ -56,11 +56,13 @@ class ProvidersController extends Controller {
      * Display the specified resource.
      *
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return ProviderResource
      */
     public function show($id)
     {
-        //
+        return new ProviderResource(
+            Provider::findOrFail($id)
+        );
     }
 
     /**
