@@ -2,8 +2,10 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler {
@@ -47,9 +49,15 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, \Exception $exception)
     {
-        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException) {
-            return response()->json(['Not Found Exception!'], \Illuminate\Http\Response::HTTP_NOT_FOUND);
-        }
+        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException)
+            return response()->json(['message' => 'Not Found!'], 404);
+
+        if ($exception instanceof AuthenticationException)
+            return response()->json(['message' => 'Unauthenticated...'], 401);
+
+        if ($exception instanceof ThrottleRequestsException)
+            return response()->json(['message' => 'Too Many Requests ...'] , 429);
+
         return parent::render($request, $exception);
     }
 }
