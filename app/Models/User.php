@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
@@ -32,19 +31,5 @@ class User extends Authenticatable
     protected $hidden = [
         'password'
     ];
-
-    #-------------------------------------##   <editor-fold desc="The RelationShips">   ##----------------------------------------------------#
-
-    /**
-     * user  webinars
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function webinars()
-    {
-        return $this->hasMany(Webinar::class, 'provider_id');
-    }
-
-    # </editor-fold>
 
 }
