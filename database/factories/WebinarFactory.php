@@ -10,6 +10,8 @@ $factory->define(\App\Models\Webinar::class, function (Faker $faker) {
         'content' => $faker->paragraph,
         'provider_id' => function(){
             return factory(\App\Models\Provider::class)->create()->id;
-        }
+        },
+        'image' => $faker->sentence,
+        'banner' => $faker->sentence,
     ];
 });

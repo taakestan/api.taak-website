@@ -33,6 +33,16 @@ class Webinar extends Model
         'id', 'slug', 'provider_id'
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'links' => 'array'
+    ];
+
+
     #-------------------------------------##   <editor-fold desc="Booting">   ##----------------------------------------------------#
 
     /**

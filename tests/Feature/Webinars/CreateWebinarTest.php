@@ -4,6 +4,7 @@ namespace Tests\Feature\Webinars;
 
 use App\Models\Webinar;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class CreateWebinarTest extends TestCase {
@@ -37,9 +38,22 @@ class CreateWebinarTest extends TestCase {
      */
     protected function store()
     {
-        return $this->postJson(
+        return $this->signIn()->postJson(
             route('webinars.store'), $this->data
         );
+    }
+
+    # </editor-fold>
+
+    #-------------------------------------##   <editor-fold desc="The Security">   ##----------------------------------------------------#
+
+    /** @test */
+    public function guest_can_not_create_new_webinars()
+    {
+        $this->setData()
+            ->postJson(
+                route('webinars.store'), []
+            )->assertStatus(401);
     }
 
     # </editor-fold>
@@ -117,20 +131,60 @@ class CreateWebinarTest extends TestCase {
             ->assertJsonValidationErrors('provider_id');
     }
 
+    /** @test */
+    public function it_required_image()
+    {
+        $this->setData(['image' => null])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('image');
+    }
+    /** @test */
+    public function it_required_banner()
+    {
+        $this->setData(['banner' => null])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('banner');
+    }
+
+    /** @test */
+    public function it_can_take_a_links_array()
+    {
+        $this->setData(['links' => null])
+            ->store()
+            ->assertJsonMissingValidationErrors('links');
+
+        $this->setData(['links' => []])
+            ->store()
+            ->assertJsonMissingValidationErrors('links');
+
+        $this->setData(['links' => 12345])
+            ->store()
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('links');
+    }
+
     # </editor-fold>
 
     /** @test */
     public function it_store_new_webinar_into_database()
     {
-        $this->setData()
-            ->store()
+        Storage::fake('media');
+
+        $this->setData([
+            'image' => jpeg_fake_base_64(),
+            'banner' => jpeg_fake_base_64(),
+        ])->store()
             ->assertStatus(201)
             ->assertJsonStructure([
                 'data' => [
-                    'id', 'title', 'label', 'slug', 'description', 'content'
+                    'id', 'title', 'label', 'slug', 'description', 'content', 'links', 'image' , 'banner'
                 ], 'message'
             ]);
+        $this->assertDatabaseHas('webinars', array_except($this->data, ['image' , 'banner']));
 
-        $this->assertDatabaseHas('webinars', $this->data);
+        Storage::disk('media')->assertExists(Webinar::first()->image);
+        Storage::disk('media')->assertExists(Webinar::first()->image);
     }
 }

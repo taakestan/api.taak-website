@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property integer id
@@ -11,6 +12,10 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string slug
  * @property string description
  * @property string content
+ * @property string provider_id
+ * @property string image
+ * @property string banner
+ * @property array links
  */
 class WebinarResource extends JsonResource
 {
@@ -29,7 +34,10 @@ class WebinarResource extends JsonResource
             'slug' => $this->slug,
             'description' => $this->description,
             'content' => $this->content,
-            'provider_id' => $this->provider_id,
+            'provider' => new ProviderResource($this->whenLoaded('provider')),
+            'image' => Storage::disk('media')->url($this->image),
+            'banner' => Storage::disk('media')->url($this->banner),
+            'links' => $this->links
         ];
     }
 }

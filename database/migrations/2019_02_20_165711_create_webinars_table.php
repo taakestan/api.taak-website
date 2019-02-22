@@ -24,6 +24,9 @@ class CreateWebinarsTable extends Migration
 
             $table->text('description');
             $table->text('content');
+            $table->string('image');
+            $table->string('banner');
+            $table->json('links')->nullable();
 
             $table->timestamps();
 

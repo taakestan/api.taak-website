@@ -12,6 +12,11 @@ class WebinarsController extends Controller {
 
     use Base64Generator;
 
+    public function __construct()
+    {
+        $this->middleware('auth')->except('index', 'show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -38,8 +43,30 @@ class WebinarsController extends Controller {
             'label' => 'required|string',
             'description' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
             'content' => 'required|string', // this not optimized db structure, in the future we must separate this into own table
-            'provider_id' => 'required|exists:providers,id'
+            'provider_id' => 'required|exists:providers,id',
+            'links' => 'nullable|array',
+            'image' => 'required', //TODO: this is should move to morph table of images future
+            'banner' => 'required'  //TODO: this is should move to morph table of images future
         ]);
+
+
+        try {
+            $image = $this->createFileFromBase64($validated['image']);
+            $banner = $this->createFileFromBase64($validated['banner']);
+        } catch (\App\Exceptions\InvalidBase64Data $e) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                "image or banner" => 'base64 invalid data'
+            ]);
+        }
+
+        \Illuminate\Support\Facades\Validator::make(compact('image', 'banner'), [
+            'image' => 'required|file|mimes:jpeg,jpg,png',
+            'banner' => 'required|file|mimes:jpeg,jpg,png'
+        ])->validate();
+
+        $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')->putFile('webinars', $image);
+        $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')->putFile('webinars', $image);
+
 
         $webinar = Provider::findOrFail($validated['provider_id'])
             ->webinars()
