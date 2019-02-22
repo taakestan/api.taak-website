@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static |Provider findOrFail($provider_id)
  * @method static |Provider create(array $data)
  * @property \Illuminate\Support\Collection $webinars
+ * @property mixed username
  */
 class Provider extends Model {
     /**

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 class ProvidersController extends Controller {
 
     use Base64Generator;
+
     /**
      * ProvidersController constructor.
      */
@@ -61,7 +62,7 @@ class ProvidersController extends Controller {
         ])->validate();
 
         $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
-            ->putFileAs('providers' , $image, str_slug($validated['username']). '.jpeg');
+            ->putFileAs('providers', $image, str_slug($validated['username']) . '.jpeg');
 
         $provider = Provider::create($validated);
 
@@ -91,7 +92,7 @@ class ProvidersController extends Controller {
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $validated = $this->validate($request, [
             'first_name' => 'required|string',
@@ -102,9 +103,24 @@ class ProvidersController extends Controller {
             'image' => 'required'
         ]);
 
-        Provider::findOrFail($id)->update($validated);
 
+        try {
+            $image = $this->createFileFromBase64($validated['image']);
+
+            \Illuminate\Support\Facades\Validator::make(compact('image'), [
+                'image' => 'required|file|mimes:jpeg,jpg,png'
+            ])->validate();
+
+            $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
+                ->putFileAs('providers', $image, str_slug($validated['username']) . '.jpeg');
+
+            Provider::findOrFail($id)->update($validated);
+
+        } catch (\App\Exceptions\InvalidBase64Data $e) {
+            Provider::findOrFail($id)->update(array_except($validated, 'image'));
+        }
         return $this->respond('بروزرسانی انجام شد');
+
     }
 
     /**
@@ -117,6 +133,9 @@ class ProvidersController extends Controller {
     {
         try {
             $provider = Provider::findOrFail($id);
+            \Illuminate\Support\Facades\Storage::disk('media')->delete(
+                joinPath('providers', str_slug($provider->username) . '.jpeg')
+            );
 
             if ($provider->hasWebinar()) {
                 \Illuminate\Support\Facades\Log::info('An Admin want to delete a provider! but some webinar assign that provider :)');

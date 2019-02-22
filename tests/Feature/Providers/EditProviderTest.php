@@ -4,6 +4,7 @@ namespace Tests\Feature\Providers;
 
 use App\Models\Provider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class EditProviderTest extends TestCase {
@@ -52,8 +53,8 @@ class EditProviderTest extends TestCase {
     public function guest_can_not_edit_a_provider()
     {
         $this->putJson(
-                route('providers.update' , 1), []
-            )->assertStatus(401);
+            route('providers.update', 1), []
+        )->assertStatus(401);
     }
 
     # </editor-fold>
@@ -130,9 +131,30 @@ class EditProviderTest extends TestCase {
         $this->setData()
             ->update($provider->id)
             ->assertStatus(200)
-            ->assertJsonStructure([ 'message']);
+            ->assertJsonStructure(['message']);
 
         $this->assertDatabaseHas('providers', $this->data);
         $this->assertDatabaseMissing('providers', $provider->toArray());
+    }
+
+    /** @test */
+    public function an_authenticated_user_can_update_a_provider_with_image_updating()
+    {
+        Storage::fake('media');
+
+        $provider = create(Provider::class);
+        $this->setData([
+            'image' => jpeg_fake_base_64()
+        ])->update($provider->id)
+            ->assertStatus(200)
+            ->assertJsonStructure(['message']);
+
+        $this->assertDatabaseHas('providers', array_except($this->data, 'image'));
+        $this->assertDatabaseMissing('providers', $provider->toArray());
+
+        Storage::disk('media')->assertExists(
+            joinPath('providers', str_slug($this->data['username']) . '.jpeg')
+        );
+
     }
 }
