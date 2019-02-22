@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Providers;
 
+use App\Models\Provider;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -13,6 +14,7 @@ class GetProviderTest extends TestCase
     public function it_see_provider_in_route_providers_index()
     {
         $provider = create(Provider::class);
+
         $this->getJson(route('providers.index'))
             ->assertStatus(200)
             ->assertSee($provider->title);
@@ -24,10 +26,11 @@ class GetProviderTest extends TestCase
         create(Provider::class);
 
         return $this->getJson(route('providers.index'))
-            ->assertJsonStructure(
-                $this->wrapWithData([
-                    ['id', 'title', 'label', 'slug', 'provider_group_id']
-                ])
+            ->assertJsonStructure([
+                    'data' => [
+                        ['id', 'first_name', 'last_name', 'username', 'biography' , 'profiles' => []]
+                    ]
+                ]
             );
     }
 
@@ -38,23 +41,33 @@ class GetProviderTest extends TestCase
 
         return $this->getJson(route('providers.index'))
             ->assertExactJson(
-                $this->wrapWithData(
-                    \App\Http\Resources\ProviderResource::collection($providers)->resolve()
-                )
+                [
+                    'data' => \App\Http\Resources\ProviderResource::collection($providers)->resolve()
+                ]
             );
+    }
+    
+    /** @test */
+    public function it_show_one_provider()
+    {
+        $provider = create(Provider::class);
+
+        $this->getJson(route('providers.show' , $provider->id))
+            ->assertStatus(200)
+            ->assertSee($provider->title);
     }
 
     /** @test */
-    public function it_filter_by_provider_group_id()
+    public function it_see_provider_in_route_providers_show_in_this_format()
     {
-        $providerGroup = create('App\Models\ProviderGroup');
+        $provider = create(Provider::class);
 
-        $provider1 = create(Provider::class, ['provider_group_id' => $providerGroup->id]);
-        $provider2 = create(Provider::class);
-
-        return $this->getJson(route('providers.index', ['provider_group_id' => $providerGroup->id]))
-            ->assertStatus(200)
-            ->assertSee($provider1->title)
-            ->assertDontSee($provider2->title);
+        return $this->getJson(route('providers.show' , $provider->id))
+            ->assertJsonStructure([
+                    'data' => [
+                        'id', 'first_name', 'last_name', 'username', 'biography' , 'profiles' => []
+                    ]
+                ]
+            );
     }
 }
