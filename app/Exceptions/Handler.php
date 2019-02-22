@@ -6,6 +6,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler {
@@ -54,6 +55,12 @@ class Handler extends ExceptionHandler {
 
         if ($exception instanceof AuthenticationException)
             return response()->json(['message' => 'Unauthenticated...'], 401);
+
+        if ($exception instanceof ValidationException)
+            return response()->json([
+                'message' => 'اطلاعات وارد شده معتبر نمی باشد.',
+                'errors' => $exception->validator->getMessageBag()
+            ], 422);
 
         if ($exception instanceof ThrottleRequestsException)
             return response()->json(['message' => 'Too Many Requests ...'] , 429);
