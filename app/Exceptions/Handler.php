@@ -6,6 +6,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -51,19 +52,19 @@ class Handler extends ExceptionHandler {
     public function render($request, \Exception $exception)
     {
         if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException)
-            return response()->json(['message' => 'Not Found!'], 404);
+            return response()->json(['message' => Lang::trans('exceptions.not-found')], 404);
 
         if ($exception instanceof AuthenticationException)
-            return response()->json(['message' => 'Unauthenticated...'], 401);
+            return response()->json(['message' => Lang::trans('exceptions.authentication')], 401);
 
         if ($exception instanceof ValidationException)
             return response()->json([
-                'message' => 'اطلاعات وارد شده معتبر نمی باشد.',
+                'message' => Lang::trans('exceptions.validation'),
                 'errors' => $exception->validator->getMessageBag()
             ], 422);
 
         if ($exception instanceof ThrottleRequestsException)
-            return response()->json(['message' => 'Too Many Requests ...'] , 429);
+            return response()->json(['message' => Lang::trans('exceptions.throttle')] , 429);
 
         return parent::render($request, $exception);
     }
