@@ -69,12 +69,23 @@ class ProvidersController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
-        //
+        $validated = $this->validate($request, [
+            'first_name' => 'required|string',
+            'last_name' => 'required|string',
+            'username' => 'required|string',
+            'biography' => 'required|string',
+            'profiles' => 'nullable|array'
+        ]);
+
+        Provider::findOrFail($id)->update($validated);
+
+        return $this->respond('بروزرسانی انجام شد');
     }
 
     /**
@@ -85,6 +96,6 @@ class ProvidersController extends Controller {
      */
     public function destroy($id)
     {
-        //
+
     }
 }
