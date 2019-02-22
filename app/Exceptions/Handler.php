@@ -51,11 +51,15 @@ class Handler extends ExceptionHandler {
      */
     public function render($request, \Exception $exception)
     {
-        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException)
-            return response()->json(['message' => Lang::trans('exceptions.not-found')], 404);
-
         if ($exception instanceof AuthenticationException)
-            return response()->json(['message' => Lang::trans('exceptions.authentication')], 401);
+            return response()->json([
+                'message' => Lang::trans('exceptions.authentication')
+            ], 401);
+
+        if ($exception instanceof ModelNotFoundException || $exception instanceof NotFoundHttpException)
+            return response()->json([
+                'message' => Lang::trans('exceptions.not-found')
+            ], 404);
 
         if ($exception instanceof ValidationException)
             return response()->json([
@@ -64,7 +68,9 @@ class Handler extends ExceptionHandler {
             ], 422);
 
         if ($exception instanceof ThrottleRequestsException)
-            return response()->json(['message' => Lang::trans('exceptions.throttle')] , 429);
+            return response()->json([
+                'message' => Lang::trans('exceptions.throttle')
+            ] , 429);
 
         return parent::render($request, $exception);
     }
