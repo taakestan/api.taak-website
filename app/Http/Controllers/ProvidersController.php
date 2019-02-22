@@ -32,12 +32,12 @@ class ProvidersController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
+        $validated = $this->validate($request, [
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'username' => 'required|string',
@@ -45,7 +45,9 @@ class ProvidersController extends Controller {
             'profiles' => 'nullable|array'
         ]);
 
-        $provider
+        $provider = Provider::create($validated);
+
+        return $this->respondCreated($provider);
     }
 
     /**

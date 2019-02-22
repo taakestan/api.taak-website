@@ -37,7 +37,7 @@ class CreateProviderTest extends TestCase {
     protected function store()
     {
         return $this->signIn()->postJson(
-            route('webinars.store'), $this->data
+            route('providers.store'), $this->data
         );
     }
 

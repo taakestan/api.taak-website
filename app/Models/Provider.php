@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property integer id
  * @method static|Provider findOrFail($provider_id)
+ * @method static|Provider create(array $data)
  * @property \Illuminate\Support\Collection $webinars
  */
 class Provider extends Model
