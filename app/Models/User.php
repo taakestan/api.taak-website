@@ -59,4 +59,17 @@ class User extends Authenticatable implements JWTSubject
         'password'
     ];
 
+#-------------------------------------##   <editor-fold desc="The Mutator">   ##----------------------------------------------------#
+
+    /**
+     * hash the password attribute
+     *
+     * @param $value
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = bcrypt($value);
+    }
+
+    # </editor-fold>
 }
