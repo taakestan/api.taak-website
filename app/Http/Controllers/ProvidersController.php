@@ -119,6 +119,7 @@ class ProvidersController extends Controller {
         } catch (\App\Exceptions\InvalidBase64Data $e) {
             Provider::findOrFail($id)->update(array_except($validated, 'image'));
         }
+
         return $this->respond('بروزرسانی انجام شد');
 
     }

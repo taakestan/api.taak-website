@@ -99,7 +99,7 @@ class WebinarTest extends TestCase {
 
         $webinar = create(Webinar::class, ['provider_id' => $provider->id]);
 
-        $this->assertEquals($provider->toArray(), $webinar->provider->toArray());
+        $this->assertEquals($provider->id, $webinar->provider->id);
     }
 
     #-------------------------------------##   <editor-fold desc="The Mutator">   ##----------------------------------------------------#

@@ -133,8 +133,7 @@ class EditProviderTest extends TestCase {
             ->assertStatus(200)
             ->assertJsonStructure(['message']);
 
-        $this->assertDatabaseHas('providers', $this->data);
-        $this->assertDatabaseMissing('providers', $provider->toArray());
+        $this->assertDatabaseHas('providers', array_except( $this->data, 'image'));
     }
 
     /** @test */
@@ -150,7 +149,6 @@ class EditProviderTest extends TestCase {
             ->assertJsonStructure(['message']);
 
         $this->assertDatabaseHas('providers', array_except($this->data, 'image'));
-        $this->assertDatabaseMissing('providers', $provider->toArray());
 
         Storage::disk('media')->assertExists(
             joinPath('providers', str_slug($this->data['username']) . '.jpeg')

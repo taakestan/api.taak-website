@@ -111,24 +111,37 @@ class WebinarsController extends Controller {
             'banner' => 'required',
         ]);
 
+        $webinar = Webinar::findOrFail($id);
         try {
             $image = $this->createFileFromBase64($validated['image']);
-            $banner = $this->createFileFromBase64($validated['banner']);
 
-            \Illuminate\Support\Facades\Validator::make(compact('image' , 'banner'), [
-                'image Or banner' => 'required|file|mimes:jpeg,jpg,png'
+            \Illuminate\Support\Facades\Validator::make(compact('image'), [
+                'image' => 'required|file|mimes:jpeg,jpg,png'
             ])->validate();
 
             $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
                 ->putFile('webinars', $image);
+
+            $webinar->forceFill($validated);
+
+        } catch (\App\Exceptions\InvalidBase64Data $e) {
+        }
+
+        try {
+            $banner = $this->createFileFromBase64($validated['banner']);
+
+            \Illuminate\Support\Facades\Validator::make(compact('banner'), [
+                'banner' => 'required|file|mimes:jpeg,jpg,png'
+            ])->validate();
+
             $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
                 ->putFile('webinars', $banner);
 
-            Webinar::findOrFail($id)->forceFill($validated)->save();
-
+            $webinar->forceFill($validated);
         } catch (\App\Exceptions\InvalidBase64Data $e) {
-            Webinar::findOrFail($id)->forceFill(array_except($validated , ['image' , 'banner']))->save();
         }
+
+        $webinar->save();
 
         return $this->respond('بروزرسانی انجام شد');
     }
