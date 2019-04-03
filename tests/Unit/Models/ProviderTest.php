@@ -23,7 +23,7 @@ class ProviderTest extends TestCase {
      *
      * @return void
      */
-    protected function setUp()
+    protected function setUp() : void
     {
         parent::setUp();
         $this->provider = create(Provider::class);

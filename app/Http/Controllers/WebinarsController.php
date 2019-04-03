@@ -111,33 +111,39 @@ class WebinarsController extends Controller {
             'banner' => 'required',
         ]);
 
+        if (str_start($validated['image'], 'data:')) {
+            try {
+                $image = $this->createFileFromBase64($validated['image']);
+
+                \Illuminate\Support\Facades\Validator::make(compact('image'), [
+                    'image' => 'required|file|mimes:jpeg,jpg,png'
+                ])->validate();
+
+                $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
+                    ->putFile('webinars', $image);
+
+            } catch (\App\Exceptions\InvalidBase64Data $e) {
+                return $this->respondInternalError('تصویر ارسال شده معتبر نمیباشد');
+            }
+        }
+
+        if (str_start($validated['banner'], 'data:')) {
+            try {
+                $banner = $this->createFileFromBase64($validated['banner']);
+
+                \Illuminate\Support\Facades\Validator::make(compact('banner'), [
+                    'banner' => 'required|file|mimes:jpeg,jpg,png'
+                ])->validate();
+
+                $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
+                    ->putFile('webinars', $banner);
+
+            } catch (\App\Exceptions\InvalidBase64Data $e) {
+                return $this->respondInternalError('تصویر بنر ارسال شده معتبر نمیباشد');
+            }
+        }
+
         Webinar::findOrFail($id)->update($validated);
-//        try {
-//            $image = $this->createFileFromBase64($validated['image']);
-//
-//            \Illuminate\Support\Facades\Validator::make(compact('image'), [
-//                'image' => 'required|file|mimes:jpeg,jpg,png'
-//            ])->validate();
-//
-//            $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
-//                ->putFile('webinars', $image);
-//
-//        } catch (\App\Exceptions\InvalidBase64Data $e) {
-//        }
-//
-//        try {
-//            $banner = $this->createFileFromBase64($validated['banner']);
-//
-//            \Illuminate\Support\Facades\Validator::make(compact('banner'), [
-//                'banner' => 'required|file|mimes:jpeg,jpg,png'
-//            ])->validate();
-//
-//            $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
-//                ->putFile('webinars', $banner);
-//
-//            $webinar->forceFill($validated);
-//        } catch (\App\Exceptions\InvalidBase64Data $e) {
-//        }
 
         return $this->respond('بروزرسانی انجام شد');
     }
