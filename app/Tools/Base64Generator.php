@@ -15,15 +15,14 @@ trait Base64Generator {
      */
     public function createFileFromBase64(string $base64data)
     {
-        if (!str_start($base64data, 'data:'))
-            throw new InvalidBase64Data;
-
-
         // stripe out meme type exp -> (data:image/jpeg)
-        [$_, $base64data] = explode(';', $base64data);
+        if (strpos($base64data, ';base64') !== false) {
+            [$_, $base64data] = explode(';', $base64data);
 
-        // stripe out base64 data
-        [$_, $base64data] = explode(',', $base64data);
+            // stripe out base64 data
+            [$_, $base64data] = explode(',', $base64data);
+
+        }
 
 
         // strict mode filters for non-base64 alphabet characters
