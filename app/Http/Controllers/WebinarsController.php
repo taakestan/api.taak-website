@@ -123,7 +123,7 @@ class WebinarsController extends Controller {
                     ->putFile('webinars', $image);
 
             } catch (\App\Exceptions\InvalidBase64Data $e) {
-                return $this->respondInternalError('تصویر ارسال شده معتبر نمیباشد');
+//                return $this->respondInternalError('تصویر ارسال شده معتبر نمیباشد');
             }
         }
 
@@ -139,7 +139,7 @@ class WebinarsController extends Controller {
                     ->putFile('webinars', $banner);
 
             } catch (\App\Exceptions\InvalidBase64Data $e) {
-                return $this->respondInternalError('تصویر بنر ارسال شده معتبر نمیباشد');
+//                return $this->respondInternalError('تصویر بنر ارسال شده معتبر نمیباشد');
             }
         }
 
