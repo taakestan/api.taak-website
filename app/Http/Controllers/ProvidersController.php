@@ -6,6 +6,7 @@ use App\Http\Resources\ProviderResource;
 use App\Models\Provider;
 use App\Tools\Base64Generator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class ProvidersController extends Controller {
 
@@ -34,7 +35,7 @@ class ProvidersController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -74,7 +75,7 @@ class ProvidersController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return ProviderResource
      */
     public function show($id)
@@ -87,7 +88,7 @@ class ProvidersController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
@@ -103,23 +104,31 @@ class ProvidersController extends Controller {
             'image' => 'required'
         ]);
 
+        $provider = Provider::findOrFail($id);
 
-        try {
-            $image = $this->createFileFromBase64($validated['image']);
+        $provider->update(
+            Arr::except($validated, ['image'])
+        );
 
-            \Illuminate\Support\Facades\Validator::make(compact('image'), [
-                'image' => 'required|file|mimes:jpeg,jpg,png'
-            ])->validate();
+        if (str_start($validated['image'], 'data:')) {
+            try {
+                $image = $this->createFileFromBase64($validated['image']);
 
-            $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
-                ->putFileAs('providers', $image, str_slug($validated['username']) . '.jpeg');
+                \Illuminate\Support\Facades\Validator::make(compact('image'), [
+                    'image' => 'required|file|mimes:jpeg,jpg,png'
+                ])->validate();
 
-            Provider::findOrFail($id)->update($validated);
+                $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
+                    ->putFileAs('providers', $image, str_slug($validated['username']) . '.jpeg');
 
-        } catch (\App\Exceptions\InvalidBase64Data $e) {
-            Provider::findOrFail($id)->update(array_except($validated, 'image'));
+                $provider->update([
+                    'image' => $validated['image']
+                ]);
+
+            } catch (\App\Exceptions\InvalidBase64Data $e) {
+//                return $this->respondInternalError('تصویر ارسال شده معتبر نمیباشد');
+            }
         }
-
         return $this->respond('بروزرسانی انجام شد');
 
     }
@@ -127,7 +136,7 @@ class ProvidersController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
