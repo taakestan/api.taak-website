@@ -7,6 +7,7 @@ use App\Http\Resources\WebinarResource;
 use App\Models\Provider;
 use App\Models\Webinar;
 use App\Tools\Base64Generator;
+use Illuminate\Support\Arr;
 
 class WebinarsController extends Controller {
 
@@ -111,6 +112,12 @@ class WebinarsController extends Controller {
             'banner' => 'required',
         ]);
 
+        $webinar = Webinar::findOrFail($id);
+
+        $webinar->update(
+            Arr::except($validated, ['image', 'banner'])
+        );
+
         if (str_start($validated['image'], 'data:')) {
             try {
                 $image = $this->createFileFromBase64($validated['image']);
@@ -121,6 +128,10 @@ class WebinarsController extends Controller {
 
                 $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
                     ->putFile('webinars', $image);
+
+                $webinar->update([
+                    'image' => $validated['image']
+                ]);
 
             } catch (\App\Exceptions\InvalidBase64Data $e) {
 //                return $this->respondInternalError('تصویر ارسال شده معتبر نمیباشد');
@@ -138,12 +149,13 @@ class WebinarsController extends Controller {
                 $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
                     ->putFile('webinars', $banner);
 
+                $webinar->update([
+                    'banner' => $validated['banner']
+                ]);
             } catch (\App\Exceptions\InvalidBase64Data $e) {
 //                return $this->respondInternalError('تصویر بنر ارسال شده معتبر نمیباشد');
             }
         }
-
-        Webinar::findOrFail($id)->update($validated);
 
         return $this->respond('بروزرسانی انجام شد');
     }
