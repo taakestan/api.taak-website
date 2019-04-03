@@ -29,6 +29,7 @@ class CreateWebinarsTable extends Migration
             $table->json('links')->nullable();
 
             $table->timestamps();
+            $table->timestamp('holding_at')->nullable();
 
             $table->foreign('provider_id')
                 ->references('id')->on('providers')

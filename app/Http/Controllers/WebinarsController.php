@@ -47,7 +47,8 @@ class WebinarsController extends Controller {
             'provider_id' => 'required|exists:providers,id',
             'links' => 'nullable|array',
             'image' => 'required', //TODO: this is should move to morph table of images future
-            'banner' => 'required'  //TODO: this is should move to morph table of images future
+            'banner' => 'required',  //TODO: this is should move to morph table of images future
+            'holding_at' => 'required'
         ]);
 
 
