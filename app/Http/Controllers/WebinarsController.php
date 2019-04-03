@@ -111,35 +111,33 @@ class WebinarsController extends Controller {
             'banner' => 'required',
         ]);
 
-        $webinar = Webinar::findOrFail($id);
-        try {
-            $image = $this->createFileFromBase64($validated['image']);
-
-            \Illuminate\Support\Facades\Validator::make(compact('image'), [
-                'image' => 'required|file|mimes:jpeg,jpg,png'
-            ])->validate();
-
-            $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
-                ->putFile('webinars', $image);
-
-        } catch (\App\Exceptions\InvalidBase64Data $e) {
-        }
-
-        try {
-            $banner = $this->createFileFromBase64($validated['banner']);
-
-            \Illuminate\Support\Facades\Validator::make(compact('banner'), [
-                'banner' => 'required|file|mimes:jpeg,jpg,png'
-            ])->validate();
-
-            $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
-                ->putFile('webinars', $banner);
-
-            $webinar->forceFill($validated);
-        } catch (\App\Exceptions\InvalidBase64Data $e) {
-        }
-
-        $webinar->save();
+        Webinar::findOrFail($id)->update($validated);
+//        try {
+//            $image = $this->createFileFromBase64($validated['image']);
+//
+//            \Illuminate\Support\Facades\Validator::make(compact('image'), [
+//                'image' => 'required|file|mimes:jpeg,jpg,png'
+//            ])->validate();
+//
+//            $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
+//                ->putFile('webinars', $image);
+//
+//        } catch (\App\Exceptions\InvalidBase64Data $e) {
+//        }
+//
+//        try {
+//            $banner = $this->createFileFromBase64($validated['banner']);
+//
+//            \Illuminate\Support\Facades\Validator::make(compact('banner'), [
+//                'banner' => 'required|file|mimes:jpeg,jpg,png'
+//            ])->validate();
+//
+//            $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')
+//                ->putFile('webinars', $banner);
+//
+//            $webinar->forceFill($validated);
+//        } catch (\App\Exceptions\InvalidBase64Data $e) {
+//        }
 
         return $this->respond('بروزرسانی انجام شد');
     }

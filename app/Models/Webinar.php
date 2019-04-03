@@ -30,7 +30,7 @@ class Webinar extends Model
      * @var array
      */
     protected $guarded = [
-        'id', 'slug', 'provider_id'
+        'id', 'slug'
     ];
 
     /**
