@@ -32,7 +32,7 @@ class WebinarsController extends Controller {
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
      */
@@ -65,7 +65,7 @@ class WebinarsController extends Controller {
         ])->validate();
 
         $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')->putFile('webinars', $image);
-        $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')->putFile('webinars', $image);
+        $validated['banner'] = \Illuminate\Support\Facades\Storage::disk('media')->putFile('webinars', $banner);
 
 
         $webinar = Provider::findOrFail($validated['provider_id'])
@@ -80,7 +80,7 @@ class WebinarsController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      * @return WebinarResource
      */
     public function show($id)
@@ -93,7 +93,7 @@ class WebinarsController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request
      * @param $id
      * @return \Illuminate\Http\JsonResponse
      * @throws \Illuminate\Validation\ValidationException
@@ -121,8 +121,6 @@ class WebinarsController extends Controller {
 
             $validated['image'] = \Illuminate\Support\Facades\Storage::disk('media')
                 ->putFile('webinars', $image);
-
-            $webinar->forceFill($validated);
 
         } catch (\App\Exceptions\InvalidBase64Data $e) {
         }
