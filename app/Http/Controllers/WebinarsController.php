@@ -25,7 +25,7 @@ class WebinarsController extends Controller {
     public function index()
     {
         return WebinarResource::collection(
-            Webinar::all()
+            Webinar::paginate(6)
         );
     }
 
