@@ -26,7 +26,7 @@ class WebinarsController extends Controller {
     public function index()
     {
         return WebinarResource::collection(
-            Webinar::paginate(6)
+            Webinar::orderBy('holding_at', 'desc')->paginate(6)
         );
     }
 
@@ -82,13 +82,13 @@ class WebinarsController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param int $id
+     * @param string $slug
      * @return WebinarResource
      */
-    public function show($id)
+    public function show($slug)
     {
         return new WebinarResource(
-            Webinar::findOrFail($id)
+            Webinar::where('slug' , $slug)->firstOrFail()
         );
     }
 
@@ -111,6 +111,7 @@ class WebinarsController extends Controller {
             'links' => 'nullable|array',
             'image' => 'required',
             'banner' => 'required',
+            'holding_at' => 'required'
         ]);
 
         $webinar = Webinar::findOrFail($id);

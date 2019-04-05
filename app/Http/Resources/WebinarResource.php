@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
  * @property string image
  * @property string banner
  * @property array links
+ * @property mixed holding_at
  */
 class WebinarResource extends JsonResource
 {
@@ -37,7 +38,8 @@ class WebinarResource extends JsonResource
             'provider_id' => $this->provider_id,
             'image' => Storage::disk('media')->url($this->image),
             'banner' => Storage::disk('media')->url($this->banner),
-            'links' => $this->links
+            'links' => $this->links,
+            'holding_at' => $this->holding_at,
         ];
     }
 }
