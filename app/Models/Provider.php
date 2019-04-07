@@ -37,6 +37,34 @@ class Provider extends Model {
         'profiles' => 'array'
     ];
 
+    #-------------------------------------##   <editor-fold desc="Booting">   ##----------------------------------------------------#
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($product) {
+            $this->removeCache();
+        });
+
+        static::updating(function ($product) {
+            $this->removeCache();
+        });
+    }
+
+    public function removeCache()
+    {
+        $cache_path = '/etc/nginx/cache/';
+        unlink($cache_path);
+    }
+
+    # </editor-fold>
+
     #-------------------------------------##   <editor-fold desc="The RelationShips">   ##----------------------------------------------------#
 
     /**

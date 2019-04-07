@@ -56,11 +56,19 @@ class Webinar extends Model
 
         static::creating(function ($product) {
             $product->slug = $product->label;
+            $this->removeCache();
         });
 
         static::updating(function ($product) {
             $product->slug = $product->label;
+            $this->removeCache();
         });
+    }
+
+    public function removeCache()
+    {
+        $cache_path = '/etc/nginx/cache/';
+        unlink($cache_path);
     }
 
     # </editor-fold>
