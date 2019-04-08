@@ -26,7 +26,7 @@ class WebinarsController extends Controller {
     public function index()
     {
         return WebinarResource::collection(
-            Webinar::orderBy('holding_at', 'desc')->paginate(6)
+            Webinar::orderBy('holding_at', 'desc')->with('provider')->paginate(6)
         );
     }
 

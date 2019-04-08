@@ -36,6 +36,7 @@ class WebinarResource extends JsonResource
             'description' => $this->description,
             'content' => $this->content,
             'provider_id' => $this->provider_id,
+            'provider' => new ProviderResource($this->provider),
             'image' => Storage::disk('media')->url($this->image),
             'banner' => Storage::disk('media')->url($this->banner),
             'links' => $this->links,
